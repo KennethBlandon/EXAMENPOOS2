@@ -30,12 +30,12 @@ fun TopApp(title: String, onMenu: () -> Unit = {}, onCart: () -> Unit = {}) {
 }
 
 @Composable
-fun BottomNavigationBar(onSelect: (String) -> Unit) {
+fun BottomNavigationBar(currentScreen: String, onSelect: (String) -> Unit) {
     NavigationBar {
-        NavigationBarItem(selected = true, onClick = { onSelect("home") }, icon = { Text("Home") }, label = null)
-        NavigationBarItem(selected = false, onClick = { onSelect("search") }, icon = { Text("Search") }, label = null)
-        NavigationBarItem(selected = false, onClick = { onSelect("cart") }, icon = { Text("Cart") }, label = null)
-        NavigationBarItem(selected = false, onClick = { onSelect("profile") }, icon = { Text("Profile") }, label = null)
+        NavigationBarItem(selected = currentScreen == "home", onClick = { onSelect("home") }, icon = { Text("Home") }, label = null)
+        NavigationBarItem(selected = currentScreen == "search", onClick = { onSelect("search") }, icon = { Text("Search") }, label = null)
+        NavigationBarItem(selected = currentScreen == "cart", onClick = { onSelect("cart") }, icon = { Text("Cart") }, label = null)
+        NavigationBarItem(selected = currentScreen == "profile", onClick = { onSelect("profile") }, icon = { Text("Profile") }, label = null)
     }
 }
 
@@ -63,6 +63,10 @@ fun ProductCard(product: Product, onClick: () -> Unit = {}) {
                 Column {
                     Text(product.title, style = MaterialTheme.typography.titleMedium)
                     Text(product.category, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                    Text("Valoración: ${"%.1f".format(product.rating)}", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                    if (product.isNew) {
+                        Text("Nuevo", style = MaterialTheme.typography.labelSmall, color = Purple40)
+                    }
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {

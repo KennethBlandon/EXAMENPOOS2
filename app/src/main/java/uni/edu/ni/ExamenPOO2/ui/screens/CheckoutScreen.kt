@@ -2,7 +2,9 @@ package uni.edu.ni.ExamenPOO2.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -12,8 +14,13 @@ import androidx.compose.ui.unit.dp
 import uni.edu.ni.ExamenPOO2.ui.theme.Purple40
 
 @Composable
-fun CheckoutScreen(onConfirm: () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+fun CheckoutScreen(subtotal: Double, itemCount: Int, onConfirm: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Text("Información de Envío", style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(12.dp))
 
@@ -60,22 +67,22 @@ fun CheckoutScreen(onConfirm: () -> Unit) {
             OutlinedTextField(value = cvv, onValueChange = { cvv = it }, placeholder = { Text("CVV") }, modifier = Modifier.width(100.dp))
         }
 
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(24.dp))
 
         Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)) {
             Column(modifier = Modifier.padding(12.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Subtotal (3 items)")
-                    Text("$124.99")
+                    Text("Subtotal ($itemCount items)")
+                    Text("$${"%.2f".format(subtotal)}")
                 }
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("Envío")
                     Text("Gratis", color = MaterialTheme.colorScheme.primary)
                 }
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("Total")
-                    Text("$124.99", color = Purple40, style = MaterialTheme.typography.titleMedium)
+                    Text("$${"%.2f".format(subtotal)}", color = Purple40, style = MaterialTheme.typography.titleMedium)
                 }
             }
         }

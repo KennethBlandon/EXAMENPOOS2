@@ -4,11 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.border
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -17,11 +19,25 @@ import uni.edu.ni.ExamenPOO2.ui.model.Product
 import uni.edu.ni.ExamenPOO2.ui.theme.Purple40
 
 @Composable
-fun ProductDetailScreen(product: Product, onBack: () -> Unit, onAddToCart: () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+fun ProductDetailScreen(
+    product: Product,
+    onBack: () -> Unit,
+    onAddToCart: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
             IconButton(onClick = onBack) { Icon(Icons.Default.FavoriteBorder, contentDescription = "back") }
-            IconButton(onClick = {}) { Icon(Icons.Default.FavoriteBorder, contentDescription = "fav") }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = onEdit) { Text("Editar") }
+                OutlinedButton(onClick = onDelete) { Text("Eliminar") }
+            }
         }
 
         Box(
@@ -37,6 +53,12 @@ fun ProductDetailScreen(product: Product, onBack: () -> Unit, onAddToCart: () ->
         Text(product.category, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
         Text(product.title, style = MaterialTheme.typography.titleLarge)
         Text("$${"%.2f".format(product.price)}", color = Purple40, style = MaterialTheme.typography.titleMedium)
+        Text("Valoración: ${"%.1f".format(product.rating)} / 5", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+
+        if (product.isNew) {
+            Spacer(Modifier.height(6.dp))
+            Text("Nuevo lanzamiento", color = Purple40, style = MaterialTheme.typography.labelMedium)
+        }
 
         Spacer(Modifier.height(12.dp))
 
@@ -67,7 +89,7 @@ fun ProductDetailScreen(product: Product, onBack: () -> Unit, onAddToCart: () ->
             maxLines = 4
         )
 
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(24.dp))
 
         Button(
             onClick = onAddToCart,

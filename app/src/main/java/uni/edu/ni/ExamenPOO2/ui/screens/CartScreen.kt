@@ -1,24 +1,37 @@
 package uni.edu.ni.ExamenPOO2.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.verticalScroll
 import uni.edu.ni.ExamenPOO2.ui.components.ProductCard
-import uni.edu.ni.ExamenPOO2.ui.model.sampleProducts
+import uni.edu.ni.ExamenPOO2.ui.model.Product
 import uni.edu.ni.ExamenPOO2.ui.theme.Purple40
 
 @Composable
-fun CartScreen(onProceed: () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+fun CartScreen(products: List<Product>, onProceed: () -> Unit) {
+    val subtotal = products.sumOf { it.price }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Text("Tu Carrito", style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(12.dp))
 
-        sampleProducts.forEach {
-            ProductCard(product = it)
-            Spacer(Modifier.height(6.dp))
+        if (products.isEmpty()) {
+            Text("No hay productos disponibles.")
+        } else {
+            products.forEach {
+                ProductCard(product = it)
+                Spacer(Modifier.height(6.dp))
+            }
         }
 
         Spacer(Modifier.height(12.dp))
@@ -27,7 +40,7 @@ fun CartScreen(onProceed: () -> Unit) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("Subtotal")
-                    Text("$418.00")
+                    Text("$${"%.2f".format(subtotal)}")
                 }
                 Spacer(Modifier.height(8.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -37,12 +50,12 @@ fun CartScreen(onProceed: () -> Unit) {
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("Total", style = MaterialTheme.typography.titleMedium)
-                    Text("$418.00", color = Purple40, style = MaterialTheme.typography.titleMedium)
+                    Text("$${"%.2f".format(subtotal)}", color = Purple40, style = MaterialTheme.typography.titleMedium)
                 }
             }
         }
 
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(24.dp))
 
         Button(
             onClick = onProceed,
