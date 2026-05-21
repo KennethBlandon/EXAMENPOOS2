@@ -21,6 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import uni.edu.ni.ExamenPOO2.ui.components.BottomNavigationBar
 import uni.edu.ni.ExamenPOO2.ui.components.TopApp
+import uni.edu.ni.ExamenPOO2.ui.screens.SearchScreen
+import uni.edu.ni.ExamenPOO2.ui.screens.ProfileScreen
+import uni.edu.ni.ExamenPOO2.ui.screens.ProfileEditScreen
+import uni.edu.ni.ExamenPOO2.ui.model.User
 import uni.edu.ni.ExamenPOO2.ui.model.Product
 import uni.edu.ni.ExamenPOO2.ui.model.sampleProducts
 
@@ -36,6 +40,7 @@ fun ShopApp() {
     val selectedProduct = selectedProductId?.let { id -> products.firstOrNull { it.id == id } }
     val productToDelete = pendingDeleteProductId?.let { id -> products.firstOrNull { it.id == id } }
     val cartTotal = products.sumOf { it.price }
+    var user by remember { mutableStateOf(User(name = "Erika", email = "erika@example.com", address = "Calle Falsa 123", phone = "+505 8888-8888")) }
 
     Scaffold(
         topBar = { TopApp(title = "ShopElite", onCart = { currentScreen = "cart" }) },
@@ -107,6 +112,9 @@ fun ShopApp() {
                     )
                 }
                 "cart" -> CartScreen(products = products, onProceed = { currentScreen = "checkout" })
+                "search" -> SearchScreen(products = products, onProductClick = { p -> selectedProductId = p.id; currentScreen = "detail" })
+                "profile" -> ProfileScreen(user = user, onEdit = { currentScreen = "profile_edit" }, onLogout = { /* Simular cierre */ currentScreen = "home" })
+                "profile_edit" -> ProfileEditScreen(user = user, onCancel = { currentScreen = "profile" }, onSave = { updated -> user = updated; currentScreen = "profile" })
                 "checkout" -> CheckoutScreen(subtotal = cartTotal, itemCount = products.size, onConfirm = {
                     selectedProductId = null
                     currentScreen = "home"
